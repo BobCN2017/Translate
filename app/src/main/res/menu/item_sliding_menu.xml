@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_1"
+
+
+            android:title="Coler Test" />
+        <item
+            android:id="@+id/item_2"
+
+            android:title="Ripple 0" />
+
+        <item
+            android:id="@+id/item_3"
+
+            android:title="Ripple 1" />
+
+        <item
+            android:id="@+id/item_4"
+
+            android:title="The forth item" />
+
+        <item
+            android:id="@+id/item_5"
+            android:icon="@mipmap/ic_launcher"
+            android:title="The fifth item" />
+
+    </group>
+
+</menu>

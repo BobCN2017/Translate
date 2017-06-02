@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ThreePositionToolbar">
+        <attr name="rightButtonIcon" format="reference"/>
+        <attr name="isShowSearchView" format="boolean"/>
+        <attr name="leftButtonIcon" format="reference"/>
+        <attr name="centerIcon" format="reference"/>
+        <attr name="centerTitle" format="string"/>
+    </declare-styleable>
+</resources>
