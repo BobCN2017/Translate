@@ -14,6 +14,7 @@ import com.ff.pp.translate.R;
 import com.ff.pp.translate.bean.Record;
 import com.ff.pp.translate.utils.Constants;
 import com.ff.pp.translate.utils.PreferencesUtil;
+import com.ff.pp.translate.utils.SpeechTts;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -29,12 +30,14 @@ public class FragmentRecord extends Fragment {
     private List<Record> mData;
     private RecordAdapter mAdapter;
     private RecyclerView mRecyclerView;
+    private SpeechTts mTts;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_record, container, false);
         initRecyclerView(view);
+        mTts = new SpeechTts(getActivity());
         return view;
     }
 
@@ -48,6 +51,14 @@ public class FragmentRecord extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         scrollToBottom(mRecyclerView);
+
+        mAdapter.setOnItemClickListener(new RecordAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(Record record) {
+                mTts.startSpeaking(record.getContent()
+                        , record.getLanguage().equals(Constants.English));
+            }
+        });
     }
 
     private void scrollToBottom(RecyclerView recyclerView) {

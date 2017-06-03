@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.ff.pp.translate.MainActivity;
@@ -38,7 +40,7 @@ import java.util.List;
 
 public class FragmentMain extends Fragment {
     private static final String TAG = "FragmentMain";
-    private LinearLayout mChinese, mEnglish;
+    private CardView mChinese, mEnglish;
     private EditText mChineseEditText, mEnglishEditText;
     private SpeechTts mTts;
     private SpeechIat mEnglishIat, mChineseIat;
@@ -53,12 +55,11 @@ public class FragmentMain extends Fragment {
                 case Google.TRANSLATE:
                     ResultHolder holder = (ResultHolder) msg.obj;
                     saveTranslateRecord(holder);
-                    showResult(holder);
+                    showResult(holder, true);
                     break;
 
                 case SpeechIat.RECOGNIZE:
-                    showResult((ResultHolder) msg.obj);
-
+                    showResult((ResultHolder) msg.obj, false);
                     break;
             }
 
@@ -73,7 +74,7 @@ public class FragmentMain extends Fragment {
         initSpeech();
         initTranslateButtonListener();
         initMicrophoneButtonListener();
-        initEditTextClickListener();
+        initDeleteButtonListener();
         initData();
         return view;
     }
@@ -93,28 +94,9 @@ public class FragmentMain extends Fragment {
             mData.addAll(list);
     }
 
-    private void initEditTextClickListener() {
-        mEnglishEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!TextUtils.isEmpty(mEnglishEditText.getEditableText().toString()))
-                    mTts.startSpeaking(mEnglishEditText.getEditableText().toString(), true);
-            }
-        });
-
-        mChineseEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!TextUtils.isEmpty(mChineseEditText.getEditableText().toString()))
-                    mTts.startSpeaking(mChineseEditText.getEditableText().toString(), false);
-            }
-        });
-    }
-
-
     private void initTranslateButtonListener() {
-        Button chineseTranslate = (Button) mChinese.findViewById(R.id.button_translate);
-        Button englishTranslate = (Button) mEnglish.findViewById(R.id.button_translate);
+        ImageButton chineseTranslate = (ImageButton) mChinese.findViewById(R.id.button_translate);
+        ImageButton englishTranslate = (ImageButton) mEnglish.findViewById(R.id.button_translate);
 
         chineseTranslate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,9 +119,30 @@ public class FragmentMain extends Fragment {
         });
     }
 
+    private void initDeleteButtonListener() {
+        ImageButton chineseDelete = (ImageButton) mChinese.findViewById(R.id.button_delete);
+        ImageButton englishDelete = (ImageButton) mEnglish.findViewById(R.id.button_delete);
+
+        chineseDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mChineseEditText.setText("");
+            }
+        });
+
+        englishDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mEnglishEditText.setText("");
+            }
+        });
+    }
+
     private void initMicrophoneButtonListener() {
-        Button chineseMicrophone = (Button) mChinese.findViewById(R.id.button_microphone);
-        Button englishMicrophone = (Button) mEnglish.findViewById(R.id.button_microphone);
+        ImageButton chineseMicrophone = (ImageButton) mChinese.findViewById(R.id.button_microphone);
+        ImageButton englishMicrophone = (ImageButton) mEnglish.findViewById(R.id.button_microphone);
+
+        englishMicrophone.setImageResource(R.drawable.presence_audio_online);
 
         chineseMicrophone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,11 +160,16 @@ public class FragmentMain extends Fragment {
     }
 
     private void initView(View view) {
-        mChinese = (LinearLayout) view.findViewById(R.id.chinese);
-        mEnglish = (LinearLayout) view.findViewById(R.id.english);
+        mChinese = (CardView) view.findViewById(R.id.chinese);
+        mEnglish = (CardView) view.findViewById(R.id.english);
 
         mChineseEditText = (EditText) mChinese.findViewById(R.id.editText);
         mEnglishEditText = (EditText) mEnglish.findViewById(R.id.editText);
+
+        mChineseEditText.setHint("请输入中文,点击纸飞机按钮翻译");
+        mEnglishEditText.setHint(" Enter in English please,click the bottom right button to translate.");
+
+        ((Button) mEnglish.findViewById(R.id.button_language)).setText("En");
     }
 
     private void initSpeech() {
@@ -181,15 +189,17 @@ public class FragmentMain extends Fragment {
         return str;
     }
 
-    private void showResult(ResultHolder holder) {
+    private void showResult(ResultHolder holder, boolean needSpeaking) {
         switch (holder.getLanguage()) {
             case "en":
-                mEnglishEditText.setText(holder.getResult());
-                mTts.startSpeaking(holder.getResult(), true);
+                mEnglishEditText.append(holder.getResult());
+                if (needSpeaking)
+                    mTts.startSpeaking(holder.getResult(), true);
                 break;
             case "zh":
-                mChineseEditText.setText(holder.getResult());
-                mTts.startSpeaking(holder.getResult(), false);
+                mChineseEditText.append(holder.getResult());
+                if (needSpeaking)
+                    mTts.startSpeaking(holder.getResult(), false);
                 break;
 
         }
@@ -201,7 +211,8 @@ public class FragmentMain extends Fragment {
             position = Constants.POSITION_UPPER;
         else
             position = Constants.POSITION_UNDER;
-        Record record = new Record(holder.getResult(), position, false, System.currentTimeMillis());
+        Record record = new Record(holder.getResult(), position, false, System.currentTimeMillis()
+                , holder.getLanguage());
         addDataAndSave(record);
     }
 
@@ -217,11 +228,16 @@ public class FragmentMain extends Fragment {
 
     private void saveInputRecord(String content, boolean isChinese) {
         int position;
-        if (isChinese)
+        String language;
+        if (isChinese) {
             position = Constants.POSITION_UPPER;
-        else
+            language = Constants.Chinese;
+        } else {
             position = Constants.POSITION_UNDER;
-        Record record = new Record(content, position, true, System.currentTimeMillis());
+            language = Constants.English;
+        }
+        Record record = new Record(content, position, true,
+                System.currentTimeMillis(), language);
         addDataAndSave(record);
     }
 }

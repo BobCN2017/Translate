@@ -10,12 +10,21 @@ public class Record {
     private int position;
     private boolean input;
     private long time;
+    private String language;
 
     public Record(String content, int position, boolean input, long time) {
         this.content = content;
         this.position = position;
         this.input = input;
         this.time = time;
+    }
+
+    public Record(String content, int position, boolean input, long time, String language) {
+        this.content = content;
+        this.position = position;
+        this.input = input;
+        this.time = time;
+        this.language = language;
     }
 
     public String getContent() {
@@ -48,5 +57,13 @@ public class Record {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

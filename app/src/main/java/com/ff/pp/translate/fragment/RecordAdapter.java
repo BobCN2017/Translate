@@ -26,14 +26,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecordAdapter extends RecyclerView.Adapter {
     private static final String TAG = "RecordAdapter";
-    List<Record> mData;
-    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    Context mContext;
+    private onItemClickListener mItemListener;
+    private List<Record> mData;
+    private SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private Context mContext;
 
     public RecordAdapter(Context context, List<Record> mData) {
         this.mData = mData;
         mContext = context;
-        Log.e(TAG, "initRecyclerView mData.size(): " + mData.size() + "," + mData.get(0).getContent());
+//        Log.e(TAG, "initRecyclerView mData.size(): " + mData.size() + "," + mData.get(0).getContent());
     }
 
     @Override
@@ -73,6 +74,27 @@ public class RecordAdapter extends RecyclerView.Adapter {
                 realHolder.circleUnder.setImageResource(R.drawable.america);
             }
         }
+        setOnClickListener(realHolder,position);
+    }
+
+    private void setOnClickListener(Holder holder, final int position) {
+        holder.underLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Record record=mData.get(position);
+                if (mItemListener!=null)
+                    mItemListener.onItemClick(record);
+            }
+        });
+
+        holder.upperLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Record record=mData.get(position);
+                if (mItemListener!=null)
+                    mItemListener.onItemClick(record);
+            }
+        });
     }
 
     @Override
@@ -83,6 +105,15 @@ public class RecordAdapter extends RecyclerView.Adapter {
     public void add(Record record) {
         mData.add(record);
         notifyDataSetChanged();
+    }
+
+
+    public void setOnItemClickListener(onItemClickListener listener){
+        this.mItemListener =listener;
+    }
+
+    interface onItemClickListener{
+        void  onItemClick(Record record);
     }
 }
 
