@@ -24,6 +24,8 @@ import com.ff.pp.translate.view.ThreePositionToolbar;
 
 import java.util.ArrayList;
 
+import cn.sharesdk.framework.ShareSDK;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ShareSDK.initSDK(this);
 
         initToolbar();
         initDrawerLayout();

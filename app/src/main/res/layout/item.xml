@@ -27,13 +27,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button_language"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:textColor="@color/textColorPrimaryDark"
-                android:text="中"
-                android:layout_weight="1" />
 
             <ImageButton
                 android:id="@+id/button_microphone"
@@ -41,6 +34,14 @@
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 android:src="@drawable/presence_audio_busy" />
+
+            <ImageButton
+                android:id="@+id/button_share"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_menu_share"
+                android:textColor="@color/textColorPrimaryDark" />
 
             <ImageButton
                 android:id="@+id/button_delete"
