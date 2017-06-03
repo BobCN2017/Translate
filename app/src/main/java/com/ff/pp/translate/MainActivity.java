@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private ArrayList<Fragment> fragmentList;
     private ViewPager mViewPager;
+    private MyFragmentPagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDrawerLayout() {
         mDrawerLayout =(DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView= (NavigationView) findViewById(R.id.design_navigation_view);
+        navigationView= (NavigationView) findViewById(R.id.navigation_view_list);
 
         //左侧侧滑菜单设置默认选项及监听；
         navigationView.setCheckedItem(R.id.item_1);
@@ -95,10 +96,13 @@ public class MainActivity extends AppCompatActivity {
         fragmentList.add(new FragmentRecord());
 
         mViewPager = (ViewPager) findViewById(R.id.viewPager_container);
-        MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(
-                                                getSupportFragmentManager(), fragmentList);
-        mViewPager.setAdapter(adapter);
+        mPagerAdapter = new MyFragmentPagerAdapter( getSupportFragmentManager()
+                                                    ,fragmentList);
+        mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(0);
     }
 
+    public void updateFragment(int position){
+        mPagerAdapter.update(position);
+    }
 }

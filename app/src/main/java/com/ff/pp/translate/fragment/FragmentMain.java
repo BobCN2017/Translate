@@ -1,34 +1,49 @@
 package com.ff.pp.translate.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+
+import com.ff.pp.translate.MainActivity;
 import com.ff.pp.translate.R;
+import com.ff.pp.translate.bean.Record;
 import com.ff.pp.translate.bean.ResultHolder;
+import com.ff.pp.translate.utils.Constants;
 import com.ff.pp.translate.utils.Google;
+import com.ff.pp.translate.utils.PreferencesUtil;
 import com.ff.pp.translate.utils.SpeechIat;
 import com.ff.pp.translate.utils.SpeechTts;
 import com.ff.pp.translate.utils.T;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by PP on 2017/6/2.
  */
 
 public class FragmentMain extends Fragment {
+    private static final String TAG = "FragmentMain";
     private LinearLayout mChinese, mEnglish;
     private EditText mChineseEditText, mEnglishEditText;
     private SpeechTts mTts;
     private SpeechIat mEnglishIat, mChineseIat;
+    private List<Record> mData;
+    private Context mContext;
 
     private Handler mhandler = new Handler() {
         @Override
@@ -37,11 +52,13 @@ public class FragmentMain extends Fragment {
             switch (msg.what) {
                 case Google.TRANSLATE:
                     ResultHolder holder = (ResultHolder) msg.obj;
+                    saveTranslateRecord(holder);
                     showResult(holder);
                     break;
 
                 case SpeechIat.RECOGNIZE:
                     showResult((ResultHolder) msg.obj);
+
                     break;
             }
 
@@ -57,10 +74,24 @@ public class FragmentMain extends Fragment {
         initTranslateButtonListener();
         initMicrophoneButtonListener();
         initEditTextClickListener();
-
+        initData();
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        mContext = context;
+        super.onAttach(context);
+    }
+
+    private void initData() {
+        mData = new ArrayList<>();
+        List<Record> list = new Gson().fromJson(PreferencesUtil.getString(Constants.RECORD_NAME),
+                new TypeToken<List<Record>>() {
+                }.getType());
+        if (list != null)
+            mData.addAll(list);
+    }
 
     private void initEditTextClickListener() {
         mEnglishEditText.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +111,7 @@ public class FragmentMain extends Fragment {
         });
     }
 
+
     private void initTranslateButtonListener() {
         Button chineseTranslate = (Button) mChinese.findViewById(R.id.button_translate);
         Button englishTranslate = (Button) mEnglish.findViewById(R.id.button_translate);
@@ -89,6 +121,7 @@ public class FragmentMain extends Fragment {
             public void onClick(View view) {
                 String chinese = getInputString(mChineseEditText);
                 if (TextUtils.isEmpty(chinese)) return;
+                saveInputRecord(chinese, true);
                 Google.translate(chinese, "en", mhandler);
             }
         });
@@ -98,6 +131,7 @@ public class FragmentMain extends Fragment {
             public void onClick(View view) {
                 String english = getInputString(mEnglishEditText);
                 if (TextUtils.isEmpty(english)) return;
+                saveInputRecord(english, false);
                 Google.translate(english, "zh", mhandler);
             }
         });
@@ -159,5 +193,35 @@ public class FragmentMain extends Fragment {
                 break;
 
         }
+    }
+
+    private void saveTranslateRecord(ResultHolder holder) {
+        int position;
+        if (holder.getLanguage().equals("en"))
+            position = Constants.POSITION_UPPER;
+        else
+            position = Constants.POSITION_UNDER;
+        Record record = new Record(holder.getResult(), position, false, System.currentTimeMillis());
+        addDataAndSave(record);
+    }
+
+    private void addDataAndSave(Record record) {
+        mData.add(record);
+        String json = new Gson().toJson(mData, new TypeToken<List<Record>>() {
+        }.getType());
+        PreferencesUtil.putString(Constants.RECORD_NAME, json);
+        Log.e(TAG, "addDataAndSave: " + json);
+        if (mContext != null)
+            ((MainActivity) mContext).updateFragment(1);
+    }
+
+    private void saveInputRecord(String content, boolean isChinese) {
+        int position;
+        if (isChinese)
+            position = Constants.POSITION_UPPER;
+        else
+            position = Constants.POSITION_UNDER;
+        Record record = new Record(content, position, true, System.currentTimeMillis());
+        addDataAndSave(record);
     }
 }

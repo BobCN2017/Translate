@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
+
+    <LinearLayout
+        android:id="@+id/record_upper_layout"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textview_upper_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#b5b5b5"
+            android:text="2016-12-5 12:12"
+            android:textColor="#fefefe"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/circle_upper"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/china" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textview_upper_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/chatfrom_bg_normal"
+                android:paddingLeft="10dp"
+                android:text="你好!"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/record_under_layout"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textview_under_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#b5b5b5"
+            android:text="2016-12-5 12:12"
+            android:textColor="#fefefe"
+            android:textSize="12sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/linearlayout_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:orientation="vertical" >
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/circle_under"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/america" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textview_under_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/linearlayout_icon"
+                android:background="@drawable/chatto_bg_normal"
+                android:paddingRight="10dp"
+                android:text="你好!"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
