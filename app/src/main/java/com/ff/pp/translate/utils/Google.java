@@ -45,7 +45,7 @@ public class Google {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                T.showTips("服务器连接故障，请稍后再试.");
             }
 
             @Override
