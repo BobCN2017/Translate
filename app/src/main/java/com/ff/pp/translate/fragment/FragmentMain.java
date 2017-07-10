@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 
 import com.ff.pp.translate.MainActivity;
 import com.ff.pp.translate.R;
+import com.ff.pp.translate.bean.IatStatus;
 import com.ff.pp.translate.bean.Record;
 import com.ff.pp.translate.bean.ResultHolder;
 import com.ff.pp.translate.utils.Constants;
@@ -147,8 +148,6 @@ public class FragmentMain extends Fragment {
         ImageButton chineseMicrophone = (ImageButton) mChinese.findViewById(R.id.button_microphone);
         ImageButton englishMicrophone = (ImageButton) mEnglish.findViewById(R.id.button_microphone);
 
-        englishMicrophone.setImageResource(R.drawable.presence_audio_online);
-
         chineseMicrophone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -178,10 +177,11 @@ public class FragmentMain extends Fragment {
         englishShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              showShare(mEnglishEditText.getEditableText().toString());
+                showShare(mEnglishEditText.getEditableText().toString());
             }
         });
     }
+
     private void initView(View view) {
         mChinese = (CardView) view.findViewById(R.id.chinese);
         mEnglish = (CardView) view.findViewById(R.id.english);
@@ -197,8 +197,10 @@ public class FragmentMain extends Fragment {
 
     private void initSpeech() {
         mTts = new SpeechTts(getActivity());
-        mEnglishIat = new SpeechIat(getActivity(), true);
-        mChineseIat = new SpeechIat(getActivity(), false);
+        IatStatus english=new IatStatus("en_us",null,"please speak.","volume:","recognize end.");
+        mEnglishIat = new SpeechIat(getActivity(), english);
+        IatStatus chinese=new IatStatus("zh_cn","mandarin","请说话.","音量:","结束.");
+        mChineseIat = new SpeechIat(getActivity(), chinese);
 
     }
 

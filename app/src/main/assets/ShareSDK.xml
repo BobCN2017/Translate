@@ -60,8 +60,8 @@
     <SinaWeibo
         Id="1"
         SortId="1"
-        AppKey="568898243"
-        AppSecret="38a4f8204cc784f81f9f0daaf31e02e3"
+        AppKey="4168809751"
+        AppSecret="063a66d6309a21abd299946ffc293fe1"
         RedirectUrl="http://www.sharesdk.cn"
         ShareByAppClient="true"
         Enable="true" />
@@ -91,14 +91,17 @@
 		
 		BypassApproval是绕过审核的标记，设置为true后AppId将被忽略，故不经过
 		审核的应用也可以执行分享，但是仅限于分享文字和图片，不能分享其他类型，
-		默认值为false。此外，微信收藏不支持此字段。wx4868b35061f87885
+		默认值为false。此外，微信收藏不支持此字段。
+        小翻:
+        wx04c1b2c4cbcc05df
+		c1df827ac425a54f60cc7ad2ca7b5925
 	-->
 	<!--要分享微信小应用程序时用userName,path-->
     <Wechat
         Id="4"
         SortId="4"
-        AppId="wx4868b35061f87885"
-        AppSecret="64020361b8ec4c99936c0e3999a9f249"
+        AppId="wx22cd27e7de3e0286"
+        AppSecret="ef0f4af01bcd255009e4f09f2054d248"
 		userName="gh_afb25ac019c9"
 		path="/page/API/pages/share/share"
         BypassApproval="false"
@@ -107,8 +110,8 @@
     <WechatMoments
         Id="5"
         SortId="5"
-        AppId="wx4868b35061f87885"
-        AppSecret="64020361b8ec4c99936c0e3999a9f249"
+        AppId="wx22cd27e7de3e0286"
+        AppSecret="ef0f4af01bcd255009e4f09f2054d248"
         BypassApproval="false"
         Enable="true" />
         

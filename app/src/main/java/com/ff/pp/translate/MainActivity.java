@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Fragment> fragmentList;
     private ViewPager mViewPager;
     private MyFragmentPagerAdapter mPagerAdapter;
+    private ThreePositionToolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +52,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initToolbar() {
-        ThreePositionToolbar toolbar = (ThreePositionToolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("小翻");
-        toolbar.setCenterIcon(R.mipmap.ic_launcher_round);
-        toolbar.setOnLeftButtonClickListener(new View.OnClickListener() {
+        mToolbar = (ThreePositionToolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("小翻");
+        mToolbar.setCenterIcon(R.mipmap.ic_launcher_round);
+        mToolbar.setOnLeftButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mDrawerLayout.openDrawer(Gravity.START);
@@ -110,6 +111,17 @@ public class MainActivity extends AppCompatActivity {
                 , fragmentList);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(0);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                if (position==0){
+                    mToolbar.setTitle("小翻");
+                }else if (position==1){
+                    mToolbar.setTitle("记录");
+                }
+            }
+        });
     }
 
     public void updateFragment(int position) {

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.ff.pp.translate.bean.IatMedium;
 import com.ff.pp.translate.bean.IatResult;
+import com.ff.pp.translate.bean.IatStatus;
 import com.ff.pp.translate.bean.IatWord;
 import com.ff.pp.translate.bean.ResultHolder;
 import com.google.gson.Gson;
@@ -32,68 +33,55 @@ public class SpeechIat {
     public static final int RECOGNIZE = 101;
     private SpeechRecognizer mIats;
     private Gson gson;
-    private boolean isEnglish;
     private Handler mHandler;
+    private IatStatus mStatus;
+    private static int iatNumber = 0;
     // 语音识别初始化监听者；
     private InitListener mIatInitListener = new InitListener() {
         @Override
         public void onInit(int code) {
             if (code == ErrorCode.SUCCESS) {
-                if (isEnglish)
-                    setIatParamsAsEnglish();
-                else
-                    setIatParamsAsChinese();
+                setIatParams();
             } else {
             }
         }
     };
 
-    public SpeechIat(Context context, boolean isEnglish) {
+
+    public SpeechIat(Context context, IatStatus status) {
         // 语音输入初始化；
-        if (isEnglish)
+        if (iatNumber == 0)
             mIats = SpeechRecognizer.createRecognizer(context, mIatInitListener);
         else
-            mIats=getRecognizerByReflect(context,mIatInitListener);
+            mIats = getRecognizerByReflect(context, mIatInitListener);
         gson = new Gson();
-        this.isEnglish = isEnglish;
+        mStatus = status;
+        iatNumber++;
     }
 
     private SpeechRecognizer getRecognizerByReflect(Context context, InitListener mIatInitListener) {
-        SpeechRecognizer recognizer=null;
+        SpeechRecognizer recognizer = null;
         Class<SpeechRecognizer> cl = SpeechRecognizer.class;
         try {
             Constructor<SpeechRecognizer> constructor = cl.getDeclaredConstructor(Context.class, InitListener.class);
             constructor.setAccessible(true);
-            recognizer=constructor.newInstance(context,mIatInitListener);
-            Log.e(TAG, "getRecognizerByReflect: " );
+            recognizer = constructor.newInstance(context, mIatInitListener);
+            Log.e(TAG, "getRecognizerByReflect: ");
         } catch (NoSuchMethodException e) {
-            Log.e(TAG, "getRecognizerByReflect NoSuchMethodException: " );
+            Log.e(TAG, "getRecognizerByReflect NoSuchMethodException: ");
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            Log.e(TAG, "getRecognizerByReflect IllegalAccessException: " );
+            Log.e(TAG, "getRecognizerByReflect IllegalAccessException: ");
             e.printStackTrace();
         } catch (InstantiationException e) {
-            Log.e(TAG, "getRecognizerByReflect InstantiationException: " );
+            Log.e(TAG, "getRecognizerByReflect InstantiationException: ");
             e.printStackTrace();
         } catch (InvocationTargetException e) {
-            Log.e(TAG, "getRecognizerByReflect InvocationTargetException: " );
+            Log.e(TAG, "getRecognizerByReflect InvocationTargetException: ");
             e.printStackTrace();
         }
 
         return recognizer;
-    }
-
-    public void setIatParamsAsEnglish() {
-        setIatParams();
-        mIats.setParameter(SpeechConstant.LANGUAGE, "en_us");
-        isEnglish = true;
-    }
-
-    public void setIatParamsAsChinese() {
-        setIatParams();
-        mIats.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
-        mIats.setParameter(SpeechConstant.ACCENT, "mandarin");
-        isEnglish = false;
     }
 
     // 设置语音识别参数；
@@ -109,6 +97,9 @@ public class SpeechIat {
         mIats.setParameter(SpeechConstant.VAD_BOS, "4000");
         mIats.setParameter(SpeechConstant.VAD_EOS, "1000");
         mIats.setParameter(SpeechConstant.ASR_PTT, "true");
+        mIats.setParameter(SpeechConstant.LANGUAGE, mStatus.language);
+        if (mStatus.accent != null)
+            mIats.setParameter(SpeechConstant.ACCENT, mStatus.accent);
         Log.e(TAG, "setIatParams: finish");
     }
 
@@ -116,30 +107,19 @@ public class SpeechIat {
 
         @Override
         public void onVolumeChanged(int i, byte[] bytes) {
-            if (isEnglish) {
-                T.showTips("volume:" + i);
-            } else {
-                T.showTips("音量:" + i);
-            }
+
+            T.showTips(mStatus.tipOfVolumeChange + " "+i);
+
         }
 
         @Override
         public void onBeginOfSpeech() {
-            if (isEnglish) {
-                T.showTips("please speak");
-            } else {
-                T.showTips("请说话");
-            }
-
+            T.showTips(mStatus.tipOfBeginRecognize);
         }
 
         @Override
         public void onEndOfSpeech() {
-            if (isEnglish) {
-                T.showTips("end.");
-            } else {
-                T.showTips("结束.");
-            }
+            T.showTips(mStatus.tipOfEndRecognize);
         }
 
         @Override
@@ -161,11 +141,7 @@ public class SpeechIat {
             }
             String text = builder.toString().trim();
             ResultHolder holder;
-            if (isEnglish) {
-                holder = new ResultHolder(text, "en");
-            } else {
-                holder = new ResultHolder(text, "zh");
-            }
+            holder = new ResultHolder(text, mStatus.language.equals("en_us") ? "en" : "zh");
             mHandler.obtainMessage(RECOGNIZE, holder).sendToTarget();
         }
 

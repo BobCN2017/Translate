@@ -33,7 +33,7 @@
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:src="@drawable/presence_audio_busy" />
+                android:src="@drawable/ic_voice_search" />
 
             <ImageButton
                 android:id="@+id/button_share"
