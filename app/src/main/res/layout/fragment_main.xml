@@ -5,8 +5,8 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/chinese"
-        layout="@layout/item" />
+    android:id="@+id/chinese"
+    layout="@layout/item" />
 
     <include
         android:id="@+id/english"

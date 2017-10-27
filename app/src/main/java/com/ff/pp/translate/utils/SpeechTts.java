@@ -45,7 +45,7 @@ public class SpeechTts {
         }
     }
 
-    // 初始化监听者；
+    // 初始化监听者；这个回调非常慢，如果要快速发音，则不要这样使用
     private InitListener mInitListener = new InitListener() {
         @Override
         public void onInit(int code) {
